@@ -18,8 +18,23 @@
             this.media = (this.sim_a + this.sim_b + this.test + this.work) / 4
             return this.media
         }
+
+        calcPerformance(part) {
+            let wanted = 30
+            if (part != 1) {
+                wanted = 35
+            }
+            let max = 100
+            let known = this.sim_a + this.sim_b + this.test + this.work
+
+            let res = (known * max) / wanted
+            return res.toFixed(2)
+        }
     }
-    
+
+    let part = 0
+    part = 1
+
     /**
     * @type {string[]}
     */
@@ -61,15 +76,15 @@
     <title>NegocioPraBeatrizVerNota</title>
 </svelte:head>
 
-<div class="w-full max-h-screen overflow-y-scroll flex flex-col items-center justify-center">
+<div class="w-full h-screen flex flex-col items-center justify-start">
     <h1 class="text-3xl font-bold">Negócio Pra Beatriz Ver Nota</h1>
-    <div class="container">
-        <select class="select select-bordered w-full max-w-xs">
-            <option>Etapa 1</option>
-            <option>Etapa 2</option>
-            <option>Etapa 3</option>
+    <div class="container overflow-y-auto">
+        <select bind:value={part} class="select select-bordered w-full max-w-xs">
+            <option value="1">Etapa 1</option>
+            <option value="2">Etapa 2</option>
+            <option value="3">Etapa 3</option>
         </select>
-        <div class="grid grid-cols-5 place-items-start p-3">
+        <div class="grid grid-cols-3 sm:grid-cols-5 place-items-start p-3">
             {#each subjects as subject}
             <label class="cursor-pointer label">
                 <input type="checkbox" checked={selected_subjects.includes(subject.name)} on:change={() => toggle(subject.name)} class="checkbox mx-3" />
@@ -108,6 +123,22 @@
                     {/each}
                 </tbody>
             </table>
+            <div class="grid grid-cols-1 place-items-start">
+                {#each subjects as subject}
+                {#if selected_subjects.findIndex(m => m === subject.name) != -1}
+                <div class="stats shadow">
+                    <div class="stat place-items-center">
+                        <div class="stat-value">{subject.name}</div>
+                    </div>
+  
+                    <div class="stat place-items-center">
+                        <div class="stat-title">Aproveitamento</div>
+                        <div class="radial-progress" style="--value:{subject.calcPerformance(part)};" role="progressbar">{subject.calcPerformance(part)}</div>
+                    </div>
+                </div>
+                {/if}
+                {/each}
+            </div>
         </div>
     </div>
 </div>
