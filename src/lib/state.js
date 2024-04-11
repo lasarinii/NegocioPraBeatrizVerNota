@@ -8,6 +8,9 @@ function Save(parts) {
     localStorage.setItem('parts', serialized_parts)
 }
 
+/**
+* @returns {{parts: Part[], selected_part: number, subject_names: string[], selected_subjects: string[]}}
+*/
 function Load() {
     let subject_names = ['Artes', 'Biologia', 'Educação Física', 'Filosofia', 'Física', 'Geografia', 'História', 'Inglês', 'Literatura', 'Matemática', 'Português', 'Produção de Texto', 'Química', 'Sociologia']
     let selected_subjects = subject_names
@@ -15,8 +18,9 @@ function Load() {
 
     let stored_parts_json = localStorage.getItem('parts')
     if (stored_parts_json != null) {
-        let stored_parts = JSON.parse(stored_parts_json)
-        return {stored_parts, selected_part, subject_names, selected_subjects}
+        let stored_parts_parsed = JSON.parse(stored_parts_json)
+        let parts = stored_parts_parsed
+        return {parts, selected_part, subject_names, selected_subjects}
     }
 
     /**
