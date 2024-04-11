@@ -1,6 +1,7 @@
 <script>
     import '../app.css'
     import { onMount } from 'svelte';
+    import { Subject, Part } from '$lib/models.js'
     import { Save, Load } from '$lib/state.js'
 
     let theme = false
@@ -13,7 +14,7 @@
     let {parts, selected_part, subject_names, selected_subjects} = Load()
     onMount(() => {
         let data = Load()
-        parts = data.stored_parts
+        parts = typeof data.stored_parts == 'undefined' ? data.parts : data.stored_parts
         selected_part = data.selected_part
         subject_names = data.subject_names
         selected_subjects = data.selected_subjects
@@ -66,7 +67,7 @@
             <option value="2">Etapa 2</option>
             <option value="3">Etapa 3</option>
         </select>
-        <button on:click={() => Save(parts)} class="btn mx-3">Save</button>
+        <button on:click={() => Save(parts || [])} class="btn mx-3">Save</button>
         <label class="swap swap-rotate">
             <input type="checkbox" value={theme} on:change={() => theme = !theme} />
             <!-- sun icon -->
@@ -74,7 +75,7 @@
             <!-- moon icon -->
             <svg class="swap-off fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
         </label>
-        {#if selected_part > 0 && parts[selected_part - 1].subjects.length > 0}
+        {#if selected_part > 0 && parts}
         <div class="grid grid-cols-3 sm:grid-cols-5 place-items-start p-3">
             {#each parts[selected_part - 1].subjects as subject}
             <label class="cursor-pointer label">
